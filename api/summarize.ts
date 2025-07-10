@@ -31,38 +31,104 @@ async function scrapeArticle(url: string) {
       imageUrl = new URL(imageUrl, baseUrl.origin).href;
     }
     
-    // Extract text content with better filtering
-    let textContent = html
+    // Extract text content with much better filtering
+    // First, remove all scripts, styles, and other non-content elements
+    let cleanHtml = html
       .replace(/<script[^>]*>.*?<\/script>/gi, '')
       .replace(/<style[^>]*>.*?<\/style>/gi, '')
+      .replace(/<noscript[^>]*>.*?<\/noscript>/gi, '')
+      .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
       .replace(/<nav[^>]*>.*?<\/nav>/gi, '')
       .replace(/<header[^>]*>.*?<\/header>/gi, '')
       .replace(/<footer[^>]*>.*?<\/footer>/gi, '')
       .replace(/<aside[^>]*>.*?<\/aside>/gi, '')
-      .replace(/<[^>]*>/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
+      .replace(/<form[^>]*>.*?<\/form>/gi, '')
+      .replace(/<!--.*?-->/gi, '');
 
-    // Try to extract main content by looking for paragraphs
-    const paragraphMatches = html.match(/<p[^>]*>([^<]+(?:<[^>]*>[^<]*<\/[^>]*>[^<]*)*[^<]*)<\/p>/gi);
-    if (paragraphMatches && paragraphMatches.length > 0) {
-      const paragraphText = paragraphMatches
-        .map(p => p.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim())
-        .filter(p => p.length > 50)
-        .join(' ');
-      
-      if (paragraphText.length > textContent.length * 0.3) {
-        textContent = paragraphText;
+    // Try to find main content areas first
+    let mainContent = '';
+    
+    // Look for common article container selectors
+    const articleSelectors = [
+      /<article[^>]*>(.*?)<\/article>/gi,
+      /<div[^>]*class="[^"]*story[^"]*"[^>]*>(.*?)<\/div>/gi,
+      /<div[^>]*class="[^"]*content[^"]*"[^>]*>(.*?)<\/div>/gi,
+      /<div[^>]*class="[^"]*article[^"]*"[^>]*>(.*?)<\/div>/gi,
+      /<div[^>]*class="[^"]*post[^"]*"[^>]*>(.*?)<\/div>/gi,
+      /<main[^>]*>(.*?)<\/main>/gi
+    ];
+
+    for (const selector of articleSelectors) {
+      const matches = cleanHtml.match(selector);
+      if (matches && matches.length > 0) {
+        const content = matches.join(' ')
+          .replace(/<[^>]*>/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+        
+        if (content.length > mainContent.length && content.length > 200) {
+          mainContent = content;
+        }
       }
     }
 
-    if (textContent.length < 100) {
+    // If no main content found, extract from paragraphs more carefully
+    if (!mainContent || mainContent.length < 200) {
+      const paragraphMatches = cleanHtml.match(/<p[^>]*>([^<]*(?:<[^>]*>[^<]*<\/[^>]*>[^<]*)*[^<]*)<\/p>/gi);
+      if (paragraphMatches && paragraphMatches.length > 0) {
+        const paragraphTexts = paragraphMatches
+          .map(p => p.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim())
+          .filter(p => {
+            // Filter out common non-content patterns
+            const lowerP = p.toLowerCase();
+            return p.length > 30 && 
+                   !lowerP.includes('cookie') &&
+                   !lowerP.includes('subscribe') &&
+                   !lowerP.includes('newsletter') &&
+                   !lowerP.includes('advertisement') &&
+                   !lowerP.includes('javascript') &&
+                   !lowerP.includes('css') &&
+                   !lowerP.includes('@media') &&
+                   !lowerP.includes('keyframes') &&
+                   !lowerP.includes('window.') &&
+                   !lowerP.includes('function(') &&
+                   !/^\s*\d+%\s*{/.test(lowerP) && // CSS rules
+                   !/^\s*@/.test(lowerP) && // CSS at-rules
+                   !/enabled\s*=\s*\(\)/.test(lowerP); // JS functions
+          });
+        
+        mainContent = paragraphTexts.join(' ');
+      }
+    }
+
+    // Final fallback - extract all text but with better filtering
+    if (!mainContent || mainContent.length < 100) {
+      mainContent = cleanHtml
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .split(' ')
+        .filter(word => {
+          // Filter out obvious JavaScript/CSS keywords
+          const lowerWord = word.toLowerCase();
+          return !lowerWord.includes('function') &&
+                 !lowerWord.includes('window') &&
+                 !lowerWord.includes('document') &&
+                 !lowerWord.includes('keyframes') &&
+                 !lowerWord.includes('opacity') &&
+                 !lowerWord.includes('webkit') &&
+                 word.length > 2;
+        })
+        .join(' ')
+        .trim();
+    }
+
+    if (mainContent.length < 100) {
       throw new Error('Insufficient content extracted from article');
     }
 
     return {
       title: title.slice(0, 200),
-      content: textContent.slice(0, 8000), // Limit content size for processing
+      content: mainContent.slice(0, 8000), // Limit content size for processing
       author: undefined,
       imageUrl
     };
@@ -77,8 +143,26 @@ function createSummary(text: string) {
   const sentences = text
     .split(/[.!?]+/)
     .map(s => s.trim())
-    .filter(s => s.length > 25 && s.length < 400)
-    .filter(s => /[a-zA-Z]/.test(s));
+    .filter(s => {
+      // More aggressive filtering of non-content
+      const lowerS = s.toLowerCase();
+      return s.length > 25 && 
+             s.length < 400 &&
+             /[a-zA-Z]/.test(s) &&
+             !lowerS.includes('function') &&
+             !lowerS.includes('window.') &&
+             !lowerS.includes('document.') &&
+             !lowerS.includes('keyframes') &&
+             !lowerS.includes('opacity') &&
+             !lowerS.includes('webkit') &&
+             !lowerS.includes('promise') &&
+             !lowerS.includes('console') &&
+             !lowerS.includes('enabled') &&
+             !lowerS.includes('getadtag') &&
+             !/^\s*\d+%/.test(lowerS) && // CSS percentages
+             !/cmd:\s*\[\]/.test(lowerS) && // JS array syntax
+             !/r\s*=>\s*r\(/.test(lowerS); // Arrow functions
+    });
 
   if (sentences.length === 0) {
     return {
@@ -100,7 +184,8 @@ function createSummary(text: string) {
     // Content scoring
     const importantWords = [
       'announced', 'revealed', 'discovered', 'found', 'study', 'research',
-      'important', 'significant', 'major', 'key', 'main', 'new', 'first'
+      'important', 'significant', 'major', 'key', 'main', 'new', 'first',
+      'trump', 'brazil', 'president', 'tariffs', 'political', 'government'
     ];
     
     importantWords.forEach(word => {
