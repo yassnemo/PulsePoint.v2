@@ -94,6 +94,6 @@ export async function scrapeArticle(url: string): Promise<ScrapedArticle> {
 
   } catch (error) {
     console.error('Scraping error:', error);
-    throw new Error(`Failed to scrape article: ${error.message}`);
+    throw new Error(`Failed to scrape article: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
