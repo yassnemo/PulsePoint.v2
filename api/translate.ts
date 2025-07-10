@@ -1,5 +1,33 @@
 import { type VercelRequest, type VercelResponse } from '@vercel/node';
-import { translateText } from '../server/services/openai';
+
+// Simple translation function using basic language mapping
+function translateText(text: string, targetLanguage: string): string {
+  // For now, return the original text with a note
+  // In a real implementation, you would use a translation API
+  const languageNames: Record<string, string> = {
+    'es': 'Spanish',
+    'fr': 'French',
+    'de': 'German',
+    'it': 'Italian',
+    'pt': 'Portuguese',
+    'ru': 'Russian',
+    'zh': 'Chinese',
+    'ja': 'Japanese',
+    'ko': 'Korean',
+    'ar': 'Arabic',
+    'hi': 'Hindi',
+    'nl': 'Dutch',
+    'sv': 'Swedish',
+    'tr': 'Turkish'
+  };
+
+  if (targetLanguage === 'en') {
+    return text;
+  }
+
+  const languageName = languageNames[targetLanguage] || 'the target language';
+  return `[Translation to ${languageName} would appear here. For now, showing original text]\n\n${text}`;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Enable CORS
@@ -25,7 +53,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    const translatedText = await translateText(text, targetLanguage);
+    console.log('Translating to:', targetLanguage);
+    
+    const translatedText = translateText(text, targetLanguage);
 
     res.status(200).json({ translatedText });
   } catch (error: any) {
