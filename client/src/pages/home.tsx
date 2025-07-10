@@ -113,16 +113,77 @@ export default function Home() {
         return;
       }
 
-      const utterance = new SpeechSynthesisUtterance(translatedSummary);
-      utterance.lang = selectedLanguage === 'en' ? 'en-US' : selectedLanguage;
-      utterance.rate = 0.8;
-      utterance.pitch = 1;
+      try {
+        // Wait for voices to be loaded
+        const loadVoices = () => {
+          const voices = window.speechSynthesis.getVoices();
+          
+          const utterance = new SpeechSynthesisUtterance(translatedSummary);
+          
+          // Set language code
+          const langCode = selectedLanguage === 'en' ? 'en-US' : selectedLanguage;
+          utterance.lang = langCode;
+          
+          // Try to find a voice for the selected language
+          const voice = voices.find(v => v.lang.startsWith(langCode)) || 
+                       voices.find(v => v.lang.startsWith('en')) ||
+                       voices[0];
+          
+          if (voice) {
+            utterance.voice = voice;
+          }
+          
+          utterance.rate = 0.8;
+          utterance.pitch = 1;
+          utterance.volume = 1;
 
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
+          utterance.onstart = () => {
+            console.log('Speech started');
+            setIsSpeaking(true);
+          };
+          
+          utterance.onend = () => {
+            console.log('Speech ended');
+            setIsSpeaking(false);
+          };
+          
+          utterance.onerror = (event) => {
+            console.error('Speech error:', event);
+            setIsSpeaking(false);
+            toast({
+              title: "Speech Error",
+              description: "Failed to play text-to-speech. Try again.",
+              variant: "destructive",
+            });
+          };
 
-      window.speechSynthesis.speak(utterance);
+          // Cancel any existing speech and speak
+          window.speechSynthesis.cancel();
+          setTimeout(() => {
+            window.speechSynthesis.speak(utterance);
+          }, 100);
+        };
+
+        // Check if voices are already loaded
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) {
+          loadVoices();
+        } else {
+          // Wait for voices to load
+          window.speechSynthesis.addEventListener('voiceschanged', loadVoices, { once: true });
+          // Fallback timeout
+          setTimeout(loadVoices, 1000);
+        }
+        
+      } catch (error) {
+        console.error('Speech synthesis error:', error);
+        setIsSpeaking(false);
+        toast({
+          title: "Speech Error",
+          description: "Text-to-speech failed to initialize",
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: "Not Supported",
