@@ -1,20 +1,12 @@
 {
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "@vercel/node"
-    }
-  },
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist/public"
+      }
     }
-  ],
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist/public",
-  "installCommand": "npm install"
+  ]
 }
