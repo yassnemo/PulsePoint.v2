@@ -28,19 +28,19 @@
 }
 
 .dark {
-  --background: hsl(222, 47%, 11%);
+  --background: hsl(158, 61%, 8%);
   --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 3.7%, 15.9%);
+  --muted: hsl(158, 40%, 14%);
   --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(222, 47%, 11%);
+  --popover: hsl(158, 61%, 8%);
   --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(222, 47%, 11%);
+  --card: hsl(158, 61%, 8%);
   --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --input: hsl(240, 3.7%, 15.9%);
+  --border: hsl(158, 40%, 14%);
+  --input: hsl(158, 40%, 14%);
   --primary: hsl(246, 83%, 63%);
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary: hsl(158, 40%, 14%);
   --secondary-foreground: hsl(0, 0%, 98%);
   --accent: hsl(166, 83%, 53%);
   --accent-foreground: hsl(0, 0%, 100%);
@@ -48,6 +48,25 @@
   --destructive-foreground: hsl(0, 0%, 98%);
   --ring: hsl(240, 4.9%, 83.9%);
   --radius: 12px;
+}
+
+/* Mobile responsive improvements while keeping simple design */
+@media (max-width: 768px) {
+  button, 
+  input[type="button"], 
+  input[type="submit"], 
+  select {
+    min-height: 44px;
+  }
+  
+  /* Prevent zoom on input focus on iOS */
+  input[type="text"],
+  input[type="url"],
+  input[type="email"],
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }
 
 @layer base {
@@ -62,4 +81,177 @@
 
 .font-inter {
   font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Hamish Williams Theme Toggle */
+.theme-toggle {
+  --offset: 6px;
+  --button-size: 44px;
+  
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--button-size);
+  height: var(--button-size);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: hsl(var(--foreground));
+}
+
+.theme-toggle:hover {
+  background: hsl(var(--muted));
+  transform: scale(1.05);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+.theme-toggle-svg {
+  width: 38px;
+  height: 38px;
+}
+
+.theme-toggle-circle {
+  fill: currentColor;
+  transform: scale(0.6);
+  transform-origin: center;
+  transition-property: transform, fill;
+  transition-duration: 0.6s;
+  transition-delay: 0s;
+  transition-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.theme-toggle-circle[data-mask="true"] {
+  fill: white;
+}
+
+[data-theme="dark"] .theme-toggle-circle {
+  transform: none;
+  transition-delay: 0.3s;
+}
+
+.theme-toggle-mask {
+  fill: black;
+  transform: translate3d(100%, -100%, 0);
+  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  transition-delay: 0s;
+}
+
+[data-theme="dark"] .theme-toggle-mask {
+  transform: none;
+  transition-delay: 0.3s;
+}
+
+.theme-toggle-path {
+  stroke: currentColor;
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 3;
+  stroke-dasharray: 7 7;
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition-property: stroke-dashoffset, opacity;
+  transition-duration: 0.6s;
+  transition-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  transition-delay: 0.3s;
+}
+
+[data-theme="dark"] .theme-toggle-path {
+  stroke-dashoffset: 7;
+  opacity: 0;
+  transition-delay: 0s;
+}
+
+/* Author Link Hover Animation - Simple Underline */
+a.author-link {
+  position: relative !important;
+  display: inline-block !important;
+  text-decoration: none !important;
+}
+
+a.author-link::before {
+  content: '' !important;
+  position: absolute !important;
+  bottom: -2px !important;
+  left: 0 !important;
+  width: 0% !important;
+  height: 2px !important;
+  background: hsl(var(--primary)) !important;
+  transition: width 0.3s ease !important;
+}
+
+a.author-link:hover::before {
+  width: 100% !important;
+}
+
+/* Enhanced mobile responsiveness for author link */
+@media (max-width: 640px) {
+  .author-link::after {
+    height: 1.5px;
+    bottom: -1px;
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+  .theme-toggle {
+    --button-size: 40px;
+  }
+  
+  .theme-toggle-svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Custom colors for dark mode */
+.dark .author-link,
+.dark a[href="https://yerradouani.me/"] {
+  color: #EAD7BB !important;
+}
+
+.dark .author-link:hover,
+.dark a[href="https://yerradouani.me/"]:hover {
+  color: #EAD7BB !important;
+}
+
+.dark .author-link .group-hover\:w-full,
+.dark a[href="https://yerradouani.me/"] span {
+  background-color: #EAD7BB !important;
+}
+
+/* Send button and primary buttons in dark mode */
+.dark button[class*="bg-primary"],
+.dark .bg-primary {
+  background-color: #EAD7BB !important;
+  color: #113946 !important;
+  border-color: #EAD7BB !important;
+}
+
+.dark button[class*="bg-primary"]:hover,
+.dark .bg-primary:hover,
+.dark button[class*="hover:bg-primary"]:hover {
+  background-color: #E5D0A8 !important;
+  color: #113946 !important;
+}
+
+/* Voice reading button in dark mode */
+.dark button[class*="bg-accent"],
+.dark .bg-accent {
+  background-color: #FFF2D8 !important;
+  color: #113946 !important;
+  border-color: #FFF2D8 !important;
+}
+
+.dark button[class*="bg-accent"]:hover,
+.dark .bg-accent:hover,
+.dark button[class*="hover:bg-accent"]:hover {
+  background-color: #F5E6C8 !important;
+  color: #113946 !important;
 }
