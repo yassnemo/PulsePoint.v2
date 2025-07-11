@@ -8,13 +8,20 @@
 <style>
   /* Default (light mode) colors */
   .logo-fill {
-    fill: #1f2937; /* Dark gray for light mode */
+    fill: #000000; /* Black for light mode */
   }
   
-  /* Dark mode colors */
+  /* Dark mode colors - multiple selectors for compatibility */
+  html.dark .logo-fill,
+  body[data-theme="dark"] .logo-fill,
+  [data-theme="dark"] .logo-fill {
+    fill: #ffffff; /* White for dark mode */
+  }
+  
+  /* Fallback for prefers-color-scheme */
   @media (prefers-color-scheme: dark) {
     .logo-fill {
-      fill: #f9fafb; /* Light gray for dark mode */
+      fill: #ffffff; /* White for dark mode */
     }
   }
 </style>

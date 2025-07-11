@@ -5,19 +5,19 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 100%);
+  --background: hsl(44, 44%, 83%);
   --foreground: hsl(240, 10%, 3.9%);
-  --muted: hsl(240, 4.8%, 95.9%);
+  --muted: hsl(44, 30%, 76%);
   --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(0, 0%, 100%);
+  --popover: hsl(44, 44%, 83%);
   --popover-foreground: hsl(240, 10%, 3.9%);
-  --card: hsl(0, 0%, 100%);
+  --card: hsl(44, 44%, 83%);
   --card-foreground: hsl(240, 10%, 3.9%);
-  --border: hsl(240, 5.9%, 90%);
-  --input: hsl(240, 5.9%, 90%);
+  --border: hsl(44, 30%, 76%);
+  --input: hsl(44, 30%, 76%);
   --primary: hsl(246, 83%, 63%);
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(240, 4.8%, 95.9%);
+  --secondary: hsl(44, 30%, 76%);
   --secondary-foreground: hsl(240, 5.9%, 10%);
   --accent: hsl(166, 83%, 53%);
   --accent-foreground: hsl(0, 0%, 100%);
@@ -254,4 +254,13 @@ a.author-link:hover::before {
 .dark button[class*="hover:bg-accent"]:hover {
   background-color: #F5E6C8 !important;
   color: #113946 !important;
+}
+
+/* Logo color overrides for theme compatibility */
+img[src="/logo.svg"] {
+  filter: brightness(0); /* Makes logo black in light mode */
+}
+
+.dark img[src="/logo.svg"] {
+  filter: brightness(0) invert(1); /* Makes logo white in dark mode */
 }
