@@ -4,21 +4,6 @@
 
 Welcome to PulsePoint-v2, whether you're a busy professional, student, or just someone who loves staying informed without the information overload, this tool has got your back!
 
-## ✨ What Makes This Special?
-
-**🎯 Smart AI Summarization**
-
-**🌐 Universal Web Scraping** 
-
-**🎨 Beautiful, Modern UI**
-
-**🌙 Dark/Light Mode**
-
-**🔊 Text-to-Speech**
-
-**📋 Smart Copy Features**
-
-**⚡ Lightning Fast**
 
 ## 🚀 Quick Start
 
@@ -202,7 +187,9 @@ git push origin my-feature
 
 ## 📄 License
 
-MIT License – feel free to use this for whatever you'd like! Just remember to give credit where it's due.
+MIT License – feel free to use this for whatever you'd like! 
+
+Just remember to give credit where it's due.
 
 
 Created by [Yassine Erradouani](https://yerradouani.me)
