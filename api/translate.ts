@@ -11,9 +11,9 @@ async function translateText(text: string, targetLanguage: string): Promise<stri
     const response = await fetch(
       `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLanguage}`,
       {
-        headers: {
-          'User-Agent': 'ArticleSummarizer/1.0'
-        }
+      headers: {
+        'User-Agent': 'PulsePoint/2.0'
+      }
       }
     );
 

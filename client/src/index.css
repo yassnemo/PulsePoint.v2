@@ -377,10 +377,10 @@ button[class*="hover:bg-muted"]:hover {
   background-color: rgba(0, 238, 255, 0.1) !important;
 }
 
-/* Modern custom scrollbar for dropdown */
+/* Modern custom scrollbar for dropdown - Light mode */
 .scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: rgba(139, 92, 246, 0.3) transparent;
+  scrollbar-color: rgba(39, 63, 79, 0.3) transparent;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
@@ -393,15 +393,15 @@ button[class*="hover:bg-muted"]:hover {
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(139, 92, 246, 0.6));
+  background: linear-gradient(135deg, rgba(39, 63, 79, 0.4), rgba(39, 63, 79, 0.6));
   border-radius: 10px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.1);
+  box-shadow: 0 2px 4px rgba(39, 63, 79, 0.1);
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.7), rgba(139, 92, 246, 0.9));
-  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.2);
+  background: linear-gradient(135deg, rgba(39, 63, 79, 0.7), rgba(39, 63, 79, 0.9));
+  box-shadow: 0 4px 8px rgba(39, 63, 79, 0.2);
   transform: scaleX(1.2);
 }
 
@@ -437,78 +437,78 @@ button[class*="hover:bg-muted"]:hover {
   color: hsl(var(--primary)) !important;
 }
 
-/* Specific overrides for dropdown to prevent global #00EEFF from affecting it */
-.dark .language-dropdown button {
+/* Light mode dropdown styling */
+.language-dropdown button {
   color: hsl(var(--foreground)) !important;
   background-color: transparent !important;
 }
 
-.dark .language-dropdown .dropdown-trigger {
+.language-dropdown .dropdown-trigger {
   color: hsl(var(--foreground)) !important;
   background-color: hsl(var(--background)) !important;
-  border-color: transparent !important;
+  border-color: hsl(var(--border)) !important;
 }
 
-.dark .language-dropdown .dropdown-trigger:hover {
-  border-color: #00EEFF !important;
+.language-dropdown .dropdown-trigger:hover {
+  border-color: #273F4F !important;
 }
 
-.dark .language-dropdown .dropdown-trigger:focus {
-  --tw-ring-color: rgb(139, 92, 246) !important;
+.language-dropdown .dropdown-trigger:focus {
+  --tw-ring-color: rgb(39, 63, 79) !important;
 }
 
-/* Force dropdown panel to have proper dark colors */
-.dark .language-dropdown > div {
-  background-color: #000000 !important;
-  border-color: transparent !important;
-  color: #ffffff !important;
+/* Force dropdown panel to have proper light colors */
+.language-dropdown > div {
+  background-color: #FFFFFF !important;
+  border-color: hsl(var(--border)) !important;
+  color: #000000 !important;
 }
 
-.dark .language-dropdown .dropdown-panel {
-  background-color: #000000 !important;
-  border-color: transparent !important;
+.language-dropdown .dropdown-panel {
+  background-color: #FFFFFF !important;
+  border-color: hsl(var(--border)) !important;
 }
 
 /* Force all dropdown buttons to have proper colors */
-.dark .language-dropdown button:not(.dropdown-trigger) {
+.language-dropdown button:not(.dropdown-trigger) {
   background-color: transparent !important;
-  color: #ffffff !important;
+  color: #000000 !important;
 }
 
-.dark .language-dropdown .dropdown-item {
+.language-dropdown .dropdown-item {
   background-color: transparent !important;
-  color: #ffffff !important;
-}
-
-/* Individual hover effect - cyan background with black text */
-.dark .language-dropdown button:not(.dropdown-trigger):hover {
-  background-color: #00EEFF !important;
   color: #000000 !important;
 }
 
-.dark .language-dropdown .dropdown-item:hover {
-  background-color: #00EEFF !important;
-  color: #000000 !important;
+/* Individual hover effect - dark background with white text */
+.language-dropdown button:not(.dropdown-trigger):hover {
+  background-color: #273F4F !important;
+  color: #FFFFFF !important;
 }
 
-/* Selected item should be purple, not cyan */
-.dark .language-dropdown button.bg-primary\/10 {
-  background-color: rgba(139, 92, 246, 0.15) !important;
-  color: rgb(139, 92, 246) !important;
+.language-dropdown .dropdown-item:hover {
+  background-color: #273F4F !important;
+  color: #FFFFFF !important;
 }
 
-.dark .language-dropdown .selected-item {
-  background-color: rgba(139, 92, 246, 0.15) !important;
-  color: rgb(139, 92, 246) !important;
+/* Selected item should be purple in light mode */
+.language-dropdown button.bg-primary\/10 {
+  background-color: rgba(39, 63, 79, 0.1) !important;
+  color: rgb(39, 63, 79) !important;
 }
 
-/* Selected item hover - still cyan background with black text */
-.dark .language-dropdown button.bg-primary\/10:hover {
-  background-color: #00EEFF !important;
-  color: #000000 !important;
+.language-dropdown .selected-item {
+  background-color: rgba(39, 63, 79, 0.1) !important;
+  color: rgb(39, 63, 79) !important;
 }
 
-.dark .language-dropdown .selected-item:hover {
-  background-color: #00EEFF !important;
-  color: #000000 !important;
+/* Selected item hover - still dark background with white text */
+.language-dropdown button.bg-primary\/10:hover {
+  background-color: #273F4F !important;
+  color: #FFFFFF !important;
+}
+
+.language-dropdown .selected-item:hover {
+  background-color: #273F4F !important;
+  color: #FFFFFF !important;
 }
