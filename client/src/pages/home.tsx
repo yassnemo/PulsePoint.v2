@@ -4,7 +4,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowRight, Play, Square, Copy, Check, Volume2 } from "lucide-react";
+import { Loader2, ArrowRight, Play, Square, Copy, Check, Volume2, Github, Linkedin, Twitter } from "lucide-react";
 import type { SummarizeRequest, SummarizeResponse } from "@shared/schema";
 
 export default function Home() {
@@ -304,21 +304,54 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="absolute bottom-4 sm:bottom-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Developed by{" "}
-            <a 
-              href="https://yerradouani.me/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 transition-colors duration-200 relative inline-block group"
-              style={{ textDecoration: 'none' }}
-            >
-              Yassine Erradouani
-              <span 
-                className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"
-              ></span>
-            </a>
-          </p>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Developed by{" "}
+              <a 
+                href="https://yerradouani.me/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 transition-colors duration-200 relative inline-block group"
+                style={{ textDecoration: 'none' }}
+              >
+                Yassine Erradouani
+                <span 
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"
+                ></span>
+              </a>
+            </p>
+            
+            {/* Social Links */}
+            <div className="flex items-center justify-center gap-4">
+              <a
+                href="https://github.com/yassnemo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-black dark:hover:text-[#00EEFF] transition-colors duration-200 transform hover:scale-110"
+                aria-label="GitHub"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+              <a
+                href="https://linkedin.com/in/yassine-erradouani"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-black dark:hover:text-[#00EEFF] transition-colors duration-200 transform hover:scale-110"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a
+                href="https://x.com/erradouanii"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-black dark:hover:text-[#00EEFF] transition-colors duration-200 transform hover:scale-110"
+                aria-label="X (Twitter)"
+              >
+                <Twitter className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
         </footer>
       </div>
     );
