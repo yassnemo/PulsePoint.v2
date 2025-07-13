@@ -1,4 +1,6 @@
 import { type VercelRequest, type VercelResponse } from '@vercel/node';
+import { GeminiService } from './services/gemini';
+import he from 'he';
 
 // Simple web scraping function for serverless environment
 async function scrapeArticle(url: string) {
@@ -19,7 +21,10 @@ async function scrapeArticle(url: string) {
     const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i) || 
                       html.match(/<meta[^>]*property="og:title"[^>]*content="([^"]+)"/i) ||
                       html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
-    const title = titleMatch ? titleMatch[1].trim() : 'Untitled Article';
+    let title = titleMatch ? titleMatch[1].trim() : 'Untitled Article';
+    
+    // Decode HTML entities in title
+    title = he.decode(title);
     
     // Extract image
     const imgMatch = html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]+)"/i);
@@ -125,6 +130,9 @@ async function scrapeArticle(url: string) {
     if (mainContent.length < 100) {
       throw new Error('Insufficient content extracted from article');
     }
+
+    // Decode HTML entities in content
+    mainContent = he.decode(mainContent);
 
     return {
       title: title.slice(0, 200),
@@ -258,9 +266,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const scrapedData = await scrapeArticle(url);
     console.log('Scraped content length:', scrapedData.content.length);
     
-    // Create summary
-    const summaryResult = createSummary(scrapedData.content);
-    console.log('Summary created');
+    // Initialize Gemini service and create AI-powered summary
+    let summaryResult;
+    try {
+      const geminiService = new GeminiService();
+      summaryResult = await geminiService.summarizeArticle(
+        scrapedData.title, 
+        scrapedData.content,
+        parseInt(process.env.MAX_CONTENT_LENGTH || '30000')
+      );
+      console.log('AI summary created with Gemini');
+    } catch (geminiError) {
+      console.error('Gemini API failed, falling back to basic summarization:', geminiError);
+      // Fallback to basic summarization if Gemini fails
+      summaryResult = createSummary(scrapedData.content);
+      console.log('Basic summary created as fallback');
+    }
 
     const originalWords = scrapedData.content.split(/\s+/).length;
     const summaryWords = summaryResult.summary.split(/\s+/).length;
