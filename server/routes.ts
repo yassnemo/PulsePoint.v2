@@ -4,6 +4,28 @@ import { storage } from "./storage";
 import { scrapeArticle } from "./services/scraper";
 import { summarizeArticle, translateText } from "./services/openai";
 import { summarizeRequestSchema, type SummarizeResponse } from "@shared/schema";
+import * as he from 'he';
+
+// Final cleanup function for HTML entities - last resort
+function finalCleanup(text: string): string {
+  let cleaned = he.decode(text);
+  
+  // Additional aggressive cleanup
+  cleaned = cleaned
+    .replace(/"/g, '"')  // Replace smart quotes
+    .replace(/"/g, '"')  // Replace smart quotes
+    .replace(/'/g, "'")  // Replace smart apostrophes
+    .replace(/'/g, "'")  // Replace smart apostrophes
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+    
+  return cleaned;
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -64,11 +86,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const response: SummarizeResponse = {
         article: {
-          title: article.title,
+          title: finalCleanup(article.title),
           author: article.author || undefined,
           content: article.content,
-          summary: article.summary,
-          keyPoints: article.keyPoints || [],
+          summary: finalCleanup(article.summary),
+          keyPoints: (article.keyPoints || []).map(point => finalCleanup(point)),
           imageUrl: article.imageUrl || undefined,
           originalWords: article.originalWords,
           summaryWords: article.summaryWords,

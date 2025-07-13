@@ -1,5 +1,36 @@
 // Using Hugging Face's free inference API
+import * as he from 'he';
+
 const HF_API_URL = "https://api-inference.huggingface.co/models";
+
+// Comprehensive HTML entity decoder with multiple passes and BBC-specific fixes
+function decodeHtmlEntities(text: string): string {
+  // Use the 'he' library for proper HTML entity decoding
+  let decoded = he.decode(text);
+  
+  // Additional cleanup for edge cases and smart quotes
+  decoded = decoded
+    .replace(/"/g, '"')  // Replace smart quotes
+    .replace(/"/g, '"')  // Replace smart quotes
+    .replace(/'/g, "'")  // Replace smart apostrophes
+    .replace(/'/g, "'")  // Replace smart apostrophes
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    // URL-encoded entities (sometimes found in BBC content)
+    .replace(/%27/g, "'")
+    .replace(/%22/g, '"')
+    .replace(/%26/g, '&')
+    .replace(/%3C/g, '<')
+    .replace(/%3E/g, '>')
+    // Unicode escape sequences
+    .replace(/\\u0027/g, "'")
+    .replace(/\\u0022/g, '"')
+    .replace(/\\u0026/g, '&');
+  
+  return decoded;
+}
 
 async function queryHuggingFace(model: string, inputs: any, options: any = {}) {
   const response = await fetch(`${HF_API_URL}/${model}`, {
@@ -24,6 +55,9 @@ async function queryHuggingFace(model: string, inputs: any, options: any = {}) {
 }
 
 function createExtractiveSummary(text: string): { summary: string; keyPoints: string[] } {
+  // Decode HTML entities first
+  text = decodeHtmlEntities(text);
+  
   // Clean and split into sentences with better parsing
   const sentences = text
     .replace(/\s+/g, ' ')
@@ -87,7 +121,27 @@ function createExtractiveSummary(text: string): { summary: string; keyPoints: st
     if (wordCount > 35) score -= 1;
     
     // Content density (ratio of meaningful words)
-    const stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'this', 'that', 'these', 'those', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'will', 'would', 'could', 'should', 'can', 'may', 'might', 'must', 'do', 'does', 'did', 'get', 'got', 'make', 'made', 'take', 'took', 'come', 'came', 'go', 'went', 'see', 'saw', 'know', 'knew', 'think', 'thought', 'say', 'said', 'tell', 'told', 'give', 'gave', 'find', 'found', 'use', 'used', 'work', 'worked', 'call', 'called', 'try', 'tried', 'ask', 'asked', 'need', 'needed', 'feel', 'felt', 'become', 'became', 'leave', 'left', 'put', 'seem', 'seemed', 'look', 'looked', 'turn', 'turned', 'start', 'started', 'show', 'showed', 'play', 'played', 'run', 'ran', 'move', 'moved', 'live', 'lived', 'believe', 'believed', 'bring', 'brought', 'happen', 'happened', 'write', 'wrote', 'provide', 'provided', 'sit', 'sat', 'stand', 'stood', 'lose', 'lost', 'pay', 'paid', 'meet', 'met', 'include', 'included', 'continue', 'continued', 'set', 'let', 'follow', 'followed', 'stop', 'stopped', 'create', 'created', 'speak', 'spoke', 'read', 'allow', 'allowed', 'add', 'added', 'spend', 'spent', 'grow', 'grew', 'open', 'opened', 'walk', 'walked', 'win', 'won', 'offer', 'offered', 'remember', 'remembered', 'love', 'loved', 'consider', 'considered', 'appear', 'appeared', 'buy', 'bought', 'wait', 'waited', 'serve', 'served', 'die', 'died', 'send', 'sent', 'expect', 'expected', 'build', 'built', 'stay', 'stayed', 'fall', 'fell', 'cut', 'reach', 'reached', 'kill', 'killed', 'remain', 'remained'];
+    const stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 
+        'for', 'of', 'with', 'by', 'this', 'that', 'these', 'those', 'is', 'are', 'was',
+        'were', 'be', 'been', 'being', 'have', 'has', 'had', 'will', 'would', 'could',
+        'should', 'can', 'may', 'might', 'must', 'do', 'does', 'did', 'get', 'got', 
+        'make', 'made', 'take', 'took', 'come', 'came', 'go', 'went', 'see', 'saw', 
+        'know', 'knew', 'think', 'thought', 'say', 'said', 'tell', 'told', 'give', 
+        'gave', 'find', 'found', 'use', 'used', 'work', 'worked', 'call', 'called', 
+        'try', 'tried', 'ask', 'asked', 'need', 'needed', 'feel', 'felt', 'become', 
+        'became', 'leave', 'left', 'put', 'seem', 'seemed', 'look', 'looked', 'turn', 
+        'turned', 'start', 'started', 'show', 'showed', 'play', 'played', 'run', 'ran', 
+        'move', 'moved', 'live', 'lived', 'believe', 'believed', 'bring', 'brought', 
+        'happen', 'happened', 'write', 'wrote', 'provide', 'provided', 'sit', 'sat', 
+        'stand', 'stood', 'lose', 'lost', 'pay', 'paid', 'meet', 'met', 'include', 
+        'included', 'continue', 'continued', 'set', 'let', 'follow', 'followed', 'stop',
+        'stopped', 'create', 'created', 'speak', 'spoke', 'read', 'allow', 'allowed', 
+        'add', 'added', 'spend', 'spent', 'grow', 'grew', 'open', 'opened', 'walk', 
+        'walked', 'win', 'won', 'offer', 'offered', 'remember', 'remembered', 'love', 
+        'loved', 'consider', 'considered', 'appear', 'appeared', 'buy', 'bought', 'wait', 
+        'waited', 'serve', 'served', 'die', 'died', 'send', 'sent', 'expect', 'expected', 
+        'build', 'built', 'stay', 'stayed', 'fall', 'fell', 'cut', 'reach', 'reached', 
+        'kill', 'killed', 'remain', 'remained'];
     
     const contentWords = words.filter(word => !stopWords.includes(word));
     const contentRatio = contentWords.length / words.length;
@@ -133,9 +187,13 @@ function createExtractiveSummary(text: string): { summary: string; keyPoints: st
   // Extract key points (most important individual insights)
   const keyPoints = scoredSentences
     .sort((a, b) => b.score - a.score)
-    .slice(0, Math.min(5, Math.ceil(sentences.length * 0.2)))
+    .slice(0, Math.min(3, Math.ceil(sentences.length * 0.15)))
     .map(s => {
       let point = s.sentence.trim();
+      // Decode HTML entities multiple times to ensure complete cleaning
+      point = decodeHtmlEntities(point);
+      point = decodeHtmlEntities(point); // Second pass for stubborn entities
+      
       // Ensure proper punctuation
       if (!point.match(/[.!?]$/)) {
         point += '.';
@@ -147,19 +205,30 @@ function createExtractiveSummary(text: string): { summary: string; keyPoints: st
       return point;
     })
     .filter(point => point.length > 20) // Remove too short points
-    .slice(0, 5); // Limit to 5 key points
+    .slice(0, 3); // Limit to 3 key points
 
-  return { 
-    summary: summary.trim(), 
+  const finalResult = { 
+    summary: decodeHtmlEntities(decodeHtmlEntities(summary.trim())), // Double decode
     keyPoints 
   };
+  
+  console.log('Final result summary:', finalResult.summary.substring(0, 100));
+  console.log('Final result keyPoints first:', finalResult.keyPoints[0]);
+  
+  return finalResult;
 }
 
 export async function summarizeArticle(text: string): Promise<{ summary: string; keyPoints: string[] }> {
   try {
+    // Decode HTML entities from input text first
+    text = decodeHtmlEntities(text);
+    console.log('Input text sample after decoding:', text.substring(0, 200));
+    
     // Try Hugging Face first (but expect it to fail without auth)
     const maxLength = 1000;
-    const truncatedText = text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+    let truncatedText = text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+    // Ensure truncated text is also decoded
+    truncatedText = decodeHtmlEntities(truncatedText);
     
     const result = await queryHuggingFace(
       "facebook/bart-large-cnn",
@@ -174,7 +243,7 @@ export async function summarizeArticle(text: string): Promise<{ summary: string;
     if (hfSummary) {
       // Extract key points from original text even if HF works
       const { keyPoints } = createExtractiveSummary(text);
-      return { summary: hfSummary, keyPoints };
+      return { summary: decodeHtmlEntities(hfSummary), keyPoints };
     }
   } catch (error) {
     console.error("Hugging Face summarization error:", error);
@@ -221,7 +290,8 @@ function basicTranslate(text: string, targetLanguage: string): string {
 
 export async function translateText(text: string, targetLanguage: string): Promise<string> {
   try {
-    const supportedLanguages = ['en', 'es', 'fr', 'de', 'zh', 'ja', 'it', 'pt', 'ru', 'ar', 'hi', 'ko', 'nl', 'sv', 'tr'];
+    const supportedLanguages = ['en', 'es', 'fr', 'de', 'zh', 'ja', 'it', 'pt', 'ru', 
+      'ar', 'hi', 'ko', 'nl', 'sv', 'tr'];
     
     if (!supportedLanguages.includes(targetLanguage) || targetLanguage === 'en') {
       return text;

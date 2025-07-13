@@ -218,16 +218,21 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-4 pb-16 sm:pb-20">
         {/* PulsePoint Logo - Top Left */}
-        <div className="absolute top-0 left-4 sm:left-6 flex items-start justify-start w-24 h-24 sm:w-28 sm:h-28">
-          <img 
-            src="/logo.svg" 
-            alt="PulsePoint Logo" 
-            className="w-20 h-20 sm:w-24 sm:h-24"
-          />
+        <div className="absolute top-5 sm:top-7 left-2 sm:left-3 flex items-start justify-start w-16 h-16 sm:w-20 sm:h-20">
+          <div className="logo-container w-12 h-12 sm:w-16 sm:h-16">
+            <div className="logo-wrapper">
+              <img 
+                src="/logo.svg" 
+                alt="PulsePoint Logo" 
+                className="logo-base"
+              />
+              <div className="logo-fill-overlay"></div>
+            </div>
+          </div>
         </div>
 
         {/* Theme Toggle - Top Right */}
-        <div className="absolute top-4 sm:top-6 right-4 sm:right-6">
+        <div className="absolute top-6 sm:top-8 right-4 sm:right-6">
           <button
             className="theme-toggle"
             aria-label="Toggle theme"
@@ -331,17 +336,6 @@ export default function Home() {
           >
             ← Back to Search
           </button>
-          
-          {/* Compact PulsePoint Logo */}
-          <div className="flex items-center gap-2 ml-4">
-            <div className="flex items-center justify-center w-14 h-14">
-              <img 
-                src="/logo.svg" 
-                alt="PulsePoint Logo" 
-                className="w-12 h-12"
-              />
-            </div>
-          </div>
         </div>
         
         {/* Hamish Williams Theme Toggle */}
@@ -392,7 +386,7 @@ export default function Home() {
         )}
         
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold mb-2">{articleData.title}</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">{articleData.title}</h1>
           {articleData.author && (
             <p className="text-sm text-muted-foreground mb-2">
               By {articleData.author}
@@ -406,7 +400,7 @@ export default function Home() {
           <select
             value={selectedLanguage}
             onChange={(e) => handleLanguageChange(e.target.value)}
-            className="flex-[2] sm:flex-1 px-2 sm:px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary text-xs sm:text-sm"
+            className="flex-[2] sm:flex-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary text-xs sm:text-sm"
           >
             <option value="en">English</option>
             <option value="es">Spanish</option>

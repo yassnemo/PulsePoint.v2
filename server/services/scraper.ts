@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import * as he from 'he';
 
 export interface ScrapedArticle {
   title: string;
@@ -66,9 +67,17 @@ export async function scrapeArticle(url: string): Promise<ScrapedArticle> {
 
     for (const selector of contentSelectors) {
       const element = $(selector);
-      if (element.length > 0 && element.text().trim().length > 100) {
-        content = element.text().trim();
-        break;
+      if (element.length > 0) {
+        // Get HTML content and then convert to text to properly handle entities
+        const htmlContent = element.html();
+        if (htmlContent) {
+          // Create a new cheerio instance to parse the HTML content
+          const $content = cheerio.load(htmlContent);
+          content = $content.text().trim();
+          if (content.length > 100) {
+            break;
+          }
+        }
       }
     }
 
@@ -82,8 +91,36 @@ export async function scrapeArticle(url: string): Promise<ScrapedArticle> {
       throw new Error('Could not extract sufficient content from the article');
     }
 
-    // Clean up content
-    content = content.replace(/\s+/g, ' ').trim();
+    // Clean up content - decode HTML entities first, then normalize whitespace
+    console.log('Raw content before decode:', content.substring(0, 200));
+    content = he.decode(content);
+    console.log('Content after he.decode:', content.substring(0, 200));
+    
+    // Additional aggressive cleanup for BBC and other stubborn sites
+    content = content
+      .replace(/"/g, '"')  // Replace smart quotes
+      .replace(/"/g, '"')  // Replace smart quotes
+      .replace(/'/g, "'")  // Replace smart apostrophes
+      .replace(/'/g, "'")  // Replace smart apostrophes  
+      .replace(/&quot;/g, '"')
+      .replace(/&#x27;/g, "'")
+      .replace(/&#39;/g, "'")
+      .replace(/&apos;/g, "'")
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    console.log('Content after cleanup:', content.substring(0, 200));
+    
+    // Clean up title and decode HTML entities
+    title = he.decode(title)
+      .replace(/"/g, '"')
+      .replace(/"/g, '"')
+      .replace(/'/g, "'")
+      .replace(/'/g, "'")
+      .replace(/&quot;/g, '"')
+      .replace(/&#x27;/g, "'")
+      .replace(/&#39;/g, "'")
+      .replace(/&apos;/g, "'");
 
     return {
       title: title.slice(0, 200), // Limit title length
