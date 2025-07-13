@@ -4,6 +4,8 @@
 
 Welcome to PulsePoint-v2, whether you're a busy professional, student, or just someone who loves staying informed without the information overload, this tool has got your back!
 
+![site-preview](https://github.com/user-attachments/assets/c6939691-2a49-4894-ac0f-8900c98948bb)
+
 
 ## 🚀 Quick Start
 
@@ -73,6 +75,8 @@ This app is built for Vercel and deploys effortlessly:
    - `MAX_CONTENT_LENGTH`: `30000` (optional)
 
 3. **Deploy**: Vercel handles the rest automagically! ✨
+
+![summarized-article-preview-page](https://github.com/user-attachments/assets/51785736-870d-453d-a1bb-18af58aa2f16)
 
 
 ## 🎮 How to Use
