@@ -4,7 +4,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowRight, Play, Square, Copy, Check, Volume2, Github, Linkedin, Twitter } from "lucide-react";
+import { Loader2, ArrowRight, Play, Square, Copy, Check, Volume2, Github, Linkedin, Twitter, ChevronDown } from "lucide-react";
 import type { SummarizeRequest, SummarizeResponse } from "@shared/schema";
 
 export default function Home() {
@@ -15,6 +15,7 @@ export default function Home() {
   const [translatedSummary, setTranslatedSummary] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { toast } = useToast();
 
   // Theme management
@@ -29,6 +30,24 @@ export default function Home() {
       body.setAttribute("data-theme", "light");
     }
   }, [isDarkMode]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.language-dropdown')) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -98,6 +117,7 @@ export default function Home() {
 
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language);
+    setIsDropdownOpen(false);
     if (articleData && language !== "en") {
       translateMutation.mutate({
         text: articleData.summary,
@@ -107,6 +127,24 @@ export default function Home() {
       setTranslatedSummary(articleData.summary);
     }
   };
+
+  const languages = [
+    { code: "en", name: "English" },
+    { code: "es", name: "Spanish" },
+    { code: "fr", name: "French" },
+    { code: "de", name: "German" },
+    { code: "it", name: "Italian" },
+    { code: "pt", name: "Portuguese" },
+    { code: "ru", name: "Russian" },
+    { code: "zh", name: "Chinese" },
+    { code: "ja", name: "Japanese" },
+    { code: "ko", name: "Korean" },
+    { code: "ar", name: "Arabic" },
+    { code: "hi", name: "Hindi" },
+    { code: "nl", name: "Dutch" },
+    { code: "sv", name: "Swedish" },
+    { code: "tr", name: "Turkish" },
+  ];
 
   const handleTextToSpeech = () => {
     if ('speechSynthesis' in window) {
@@ -305,22 +343,6 @@ export default function Home() {
         {/* Footer */}
         <footer className="absolute bottom-4 sm:bottom-6 text-center">
           <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Developed by{" "}
-              <a 
-                href="https://yerradouani.me/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-primary hover:text-primary/80 transition-colors duration-200 relative inline-block group"
-                style={{ textDecoration: 'none' }}
-              >
-                Yassine Erradouani
-                <span 
-                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"
-                ></span>
-              </a>
-            </p>
-            
             {/* Social Links */}
             <div className="flex items-center justify-center gap-4">
               <a
@@ -351,6 +373,22 @@ export default function Home() {
                 <Twitter className="h-5 w-5" />
               </a>
             </div>
+            
+            <p className="text-sm text-muted-foreground">
+              Developed by{" "}
+              <a 
+                href="https://yerradouani.me/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 transition-colors duration-200 relative inline-block group"
+                style={{ textDecoration: 'none' }}
+              >
+                Yassine Erradouani
+                <span 
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"
+                ></span>
+              </a>
+            </p>
           </div>
         </footer>
       </div>
@@ -430,27 +468,32 @@ export default function Home() {
 
         {/* Controls */}
         <div className="flex gap-2 sm:gap-4">
-          <select
-            value={selectedLanguage}
-            onChange={(e) => handleLanguageChange(e.target.value)}
-            className="flex-[2] sm:flex-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary text-xs sm:text-sm"
-          >
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-            <option value="de">German</option>
-            <option value="it">Italian</option>
-            <option value="pt">Portuguese</option>
-            <option value="ru">Russian</option>
-            <option value="zh">Chinese</option>
-            <option value="ja">Japanese</option>
-            <option value="ko">Korean</option>
-            <option value="ar">Arabic</option>
-            <option value="hi">Hindi</option>
-            <option value="nl">Dutch</option>
-            <option value="sv">Swedish</option>
-            <option value="tr">Turkish</option>
-          </select>
+          {/* Custom Language Dropdown */}
+          <div className="relative flex-[2] sm:flex-1 language-dropdown">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-border bg-background text-foreground hover:border-primary dark:hover:border-[#00EEFF] transition-colors duration-200 text-xs sm:text-sm flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-primary dropdown-trigger"
+            >
+              <span>{languages.find(lang => lang.code === selectedLanguage)?.name}</span>
+              <ChevronDown className={`h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto scrollbar-thin dropdown-panel">
+                {languages.map((language) => (
+                  <button
+                    key={language.code}
+                    onClick={() => handleLanguageChange(language.code)}
+                    className={`w-full px-2 sm:px-3 py-2 text-left text-xs sm:text-sm hover:bg-muted dark:hover:bg-muted/80 transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg dropdown-item ${
+                      selectedLanguage === language.code ? 'bg-primary/10 text-primary selected-item' : 'text-foreground'
+                    }`}
+                  >
+                    {language.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           <Button
             onClick={handleTextToSpeech}
@@ -510,7 +553,10 @@ export default function Home() {
 
         {/* Summary */}
         <div className="bg-muted/30 rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">Summary</h2>
+          <h2 className="text-xl font-bold mb-4 text-foreground flex items-center gap-2">
+            <span className="w-1 h-6 bg-primary rounded-full"></span>
+            Summary
+          </h2>
           {translateMutation.isPending ? (
             <div className="flex items-center gap-2 text-primary">
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -528,7 +574,7 @@ export default function Home() {
             <div className="text-sm text-muted-foreground">Original Words</div>
           </div>
           <div className="bg-muted/30 rounded-lg p-4">
-            <div className="text-2xl font-bold text-accent">{articleData.summaryWords.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-accent dark:text-accent/70">{articleData.summaryWords.toLocaleString()}</div>
             <div className="text-sm text-muted-foreground">Summary Words</div>
           </div>
           <div className="bg-muted/30 rounded-lg p-4">
@@ -536,6 +582,58 @@ export default function Home() {
             <div className="text-sm text-muted-foreground">Compression</div>
           </div>
         </div>
+
+        {/* Footer */}
+        <footer className="mt-12 pt-8 border-t border-border text-center">
+          <div className="space-y-3">
+            {/* Social Links */}
+            <div className="flex items-center justify-center gap-4">
+              <a
+                href="https://github.com/yassnemo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-black dark:hover:text-[#00EEFF] transition-colors duration-200 transform hover:scale-110"
+                aria-label="GitHub"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+              <a
+                href="https://linkedin.com/in/yassine-erradouani"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-black dark:hover:text-[#00EEFF] transition-colors duration-200 transform hover:scale-110"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a
+                href="https://x.com/erradouanii"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-black dark:hover:text-[#00EEFF] transition-colors duration-200 transform hover:scale-110"
+                aria-label="X (Twitter)"
+              >
+                <Twitter className="h-5 w-5" />
+              </a>
+            </div>
+            
+            <p className="text-sm text-muted-foreground">
+              Developed by{" "}
+              <a 
+                href="https://yerradouani.me/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 transition-colors duration-200 relative inline-block group"
+                style={{ textDecoration: 'none' }}
+              >
+                Yassine Erradouani
+                <span 
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"
+                ></span>
+              </a>
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
   );
