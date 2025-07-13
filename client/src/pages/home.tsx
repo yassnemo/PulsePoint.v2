@@ -189,13 +189,17 @@ export default function Home() {
           };
           
           utterance.onerror = (event) => {
-            console.error('Speech error:', event);
+            console.log('Speech event:', event);
             setIsSpeaking(false);
-            toast({
-              title: "Speech Error",
-              description: "Failed to play text-to-speech. Try again.",
-              variant: "destructive",
-            });
+            
+            // Only show error toast for actual errors, not user cancellations or interruptions
+            if (event.error && !['canceled', 'interrupted'].includes(event.error)) {
+              toast({
+                title: "Speech Error",
+                description: "Failed to play text-to-speech. Try again.",
+                variant: "destructive",
+              });
+            }
           };
 
           // Cancel any existing speech and speak

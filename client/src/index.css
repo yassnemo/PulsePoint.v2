@@ -512,3 +512,79 @@ button[class*="hover:bg-muted"]:hover {
   background-color: #273F4F !important;
   color: #FFFFFF !important;
 }
+
+/* Dark mode dropdown styling - restored original behavior */
+.dark .language-dropdown button {
+  color: hsl(var(--foreground)) !important;
+  background-color: transparent !important;
+}
+
+.dark .language-dropdown .dropdown-trigger {
+  color: hsl(var(--foreground)) !important;
+  background-color: hsl(var(--background)) !important;
+  border-color: transparent !important;
+}
+
+.dark .language-dropdown .dropdown-trigger:hover {
+  border-color: #00EEFF !important;
+}
+
+.dark .language-dropdown .dropdown-trigger:focus {
+  --tw-ring-color: rgb(139, 92, 246) !important;
+}
+
+/* Force dropdown panel to have proper dark colors */
+.dark .language-dropdown > div {
+  background-color: #000000 !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.dark .language-dropdown .dropdown-panel {
+  background-color: #000000 !important;
+  border-color: transparent !important;
+}
+
+/* Force all dropdown buttons to have proper colors */
+.dark .language-dropdown button:not(.dropdown-trigger) {
+  background-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.dark .language-dropdown .dropdown-item {
+  background-color: transparent !important;
+  color: #ffffff !important;
+}
+
+/* Individual hover effect - cyan background with black text */
+.dark .language-dropdown button:not(.dropdown-trigger):hover {
+  background-color: #00EEFF !important;
+  color: #000000 !important;
+}
+
+.dark .language-dropdown .dropdown-item:hover {
+  background-color: #00EEFF !important;
+  color: #000000 !important;
+}
+
+/* Selected item should be purple, not cyan */
+.dark .language-dropdown button.bg-primary\/10 {
+  background-color: rgba(139, 92, 246, 0.15) !important;
+  color: rgb(139, 92, 246) !important;
+}
+
+.dark .language-dropdown .selected-item {
+  background-color: rgba(139, 92, 246, 0.15) !important;
+  color: rgb(139, 92, 246) !important;
+}
+
+/* Selected item hover - still cyan background with black text */
+.dark .language-dropdown button.bg-primary\/10:hover {
+  background-color: #00EEFF !important;
+  color: #000000 !important;
+}
+
+.dark .language-dropdown .selected-item:hover {
+  background-color: #00EEFF !important;
+  color: #000000 !important;
+}
