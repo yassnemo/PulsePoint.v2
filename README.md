@@ -6,27 +6,22 @@ Welcome to PulsePoint-v2, whether you're a busy professional, student, or just s
 
 ## ✨ What Makes This Special?
 
-**🎯 Smart AI Summarization**: Powered by Google's Gemini AI, this isn't just another text shortener. It actually *understands* what it's reading and pulls out the most important bits.
+**🎯 Smart AI Summarization**
 
-**🌐 Universal Web Scraping**: Just paste any article URL and watch the magic happen. No complex setup, no API keys to remember (except for the Gemini one of course).
+**🌐 Universal Web Scraping** 
 
-**🎨 Beautiful, Modern UI**: Built with React, Tailwind CSS, and shadcn/ui components. It's not just functional - it's gorgeous.
+**🎨 Beautiful, Modern UI**
 
-**🌙 Dark/Light Mode**: Because I know you're probably reading this at 2 AM, and your eyes deserve better.
+**🌙 Dark/Light Mode**
 
-**🔊 Text-to-Speech**: Let the app read your summaries out loud while you multitask. Perfect for commutes or when your eyes need a break.
+**🔊 Text-to-Speech**
 
-**📋 Smart Copy Features**: One-click copying with visual feedback. Because the little things matter.
+**📋 Smart Copy Features**
 
-**⚡ Lightning Fast**: Serverless architecture means no waiting around. Get your summaries in seconds, not minutes.
+**⚡ Lightning Fast**
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- **Node.js 18+** (the newer, the better!)
-- **npm** or your favorite package manager
-- **Google AI Studio account** for Gemini API access
 
 ### 1. Clone & Install
 
@@ -41,30 +36,39 @@ npm install
 Create your `.env` file:
 
 ```bash
+
 cp .env.example .env
+
 ```
 
 Then edit `.env` and add your Gemini API key:
 
 ```bash
+
 # Get this from https://aistudio.google.com/app/apikey
 GEMINI_API_KEY=your_actual_api_key_here
 
 # Optional customizations
 GEMINI_MODEL=gemini-1.5-flash
+
 MAX_CONTENT_LENGTH=30000
+
 NODE_ENV=development
+
 ```
 
 ### 3. Fire It Up!
 
 ```bash
+
 # Development mode (with hot reloading)
 npm run dev
 
 # Production build
 npm run build
+
 npm start
+
 ```
 
 Visit `http://127.0.0.1:5000` and start summarizing! 🎉
@@ -76,19 +80,15 @@ Visit `http://127.0.0.1:5000` and start summarizing! 🎉
 This app is built for Vercel and deploys effortlessly:
 
 1. **Connect your repo** to Vercel
+
 2. **Add environment variables** in the Vercel dashboard:
+
    - `GEMINI_API_KEY`: Your Google AI API key
    - `GEMINI_MODEL`: `gemini-1.5-flash` (or your preferred model)
    - `MAX_CONTENT_LENGTH`: `30000` (optional)
+
 3. **Deploy**: Vercel handles the rest automagically! ✨
 
-### Other Platforms
-
-The app uses standard serverless functions and should work on:
-- **Vercel** (where it's deployed now)
-- **Netlify** (with function adaptations)
-- **AWS Lambda** (with some tweaks)
-- **Any Node.js hosting** (traditional server mode)
 
 ## 🎮 How to Use
 
@@ -110,43 +110,16 @@ The app uses standard serverless functions and should work on:
 > - [The Guardian](https://www.theguardian.com/international)
 >
 > Just copy any article link from these sites and paste it above!
+
 2. **Hit that "Summarize" button** (or press Enter like a pro)
+
 3. **Watch the magic happen** - you'll get:
+
    - 📝 A concise summary (2-3 sentences)
    - 🎯 Key bullet points with the most important details
    - 📊 Compression stats (how much content we saved you!)
    - 🖼️ Article image (when available)
 
-
-## 🎨 Key Features Deep Dive
-
-### AI-Powered Summarization
-
-The heart of the app uses Google's Gemini AI with carefully crafted prompts to:
-
-- **Extract key information** without losing context
-- **Generate concise summaries** that capture the essence
-- **Create meaningful bullet points** highlighting important details
-- **Maintain readability** while compressing content
-
-### Intelligent Web Scraping
-
-Our custom scraper handles:
-
-- **Various website structures** and content types
-- **HTML entity decoding** for proper text display
-- **Image extraction** from Open Graph meta tags
-- **Error handling** for unreachable or malformed content
-- **Fallback strategies** when AI fails
-
-### Responsive Design
-
-Built mobile-first with:
-
-- **Adaptive layouts** that work on any screen size
-- **Touch-friendly interactions** for mobile users
-- **Optimized performance** for slower connections
-- **Accessible design** following WCAG guidelines
 
 ## 🔧 Configuration Options
 
@@ -159,23 +132,32 @@ Built mobile-first with:
 | `MAX_CONTENT_LENGTH` | Max characters to process | `30000` | ❌ No |
 | `NODE_ENV` | Environment mode | `development` | ❌ No |
 
+
 ### Customization
 
 Want to tweak the AI behavior? Check out the prompt in `api/summarize.ts` - it's designed to be easily customizable for different use cases.
 
+
 ## 🤝 Contributing
 
-We'd love your help making this even better! Here's how:
+I'd love your help making this even better! Here's how:
 
 ### Development Setup
 
-1. **Fork the repo** and clone your fork
-2. **Create a feature branch**: `git checkout -b amazing-feature`
-3. **Make your changes** and test thoroughly
-4. **Commit with clear messages**: `git commit -m "Add amazing feature"`
-5. **Push and create a PR**: We'll review it ASAP!
+```bash
 
-### What We're Looking For
+git clone https://github.com/yassnemo/PulsePoint.v2
+cd PulsePoint-v2
+git checkout -b my-feature
+# Make your changes
+git add .
+git commit -m "Describe your change"
+git push origin my-feature
+# Then open a pull request on GitHub (I'll review it as soon as possible)
+
+```
+
+### What I'm Looking For
 
 - 🐛 **Bug fixes** (especially edge cases in web scraping)
 - ✨ **New features** (language support, export options, etc.)
@@ -183,48 +165,6 @@ We'd love your help making this even better! Here's how:
 - 📚 **Documentation** (code comments, examples, tutorials)
 - 🚀 **Performance optimizations** (bundle size, loading speed)
 
-## 📝 API Reference
-
-### POST /api/summarize
-
-Summarizes an article from a given URL.
-
-**Request:**
-```typescript
-{
-  url: string // Valid HTTP/HTTPS URL
-}
-```
-
-**Response:**
-```typescript
-{
-  article: {
-    title: string
-    author?: string
-    content: string
-    summary: string
-    keyPoints: string[]
-    imageUrl?: string
-    originalWords: number
-    summaryWords: number
-    compressionRatio: number
-    aiPowered: boolean
-  }
-}
-```
-
-### POST /api/translate
-
-Translates text to different languages.
-
-**Request:**
-```typescript
-{
-  text: string
-  targetLanguage: string // Language code (e.g., 'es', 'fr', 'de')
-}
-```
 
 ## 🚨 Troubleshooting
 
@@ -259,18 +199,10 @@ Translates text to different languages.
 - **Summarization**: Typically 2-5 seconds depending on article length
 - **Memory usage**: Minimal footprint with smart caching
 
-## 🔒 Privacy & Security
-
-- **No data storage**: We don't save your articles or summaries
-- **API key protection**: Environment variables keep credentials secure
-- **CORS enabled**: Safe cross-origin requests
-- **Client-side processing**: Sensitive operations happen in your browser
 
 ## 📄 License
-MIT License – feel free to use this for whatever you'd like! Just remember to give credit where it's due. 😊
+
+MIT License – feel free to use this for whatever you'd like! Just remember to give credit where it's due.
+
 
 Created by [Yassine Erradouani](https://yerradouani.me)
-
-
-
-*P.S. If this tool saves you time, consider sharing it with others who might benefit. Knowledge is better when it's shared! 🌟*
