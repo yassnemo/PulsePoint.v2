@@ -1,26 +1,4 @@
-import { pgTable, text, serial, integer, boolean } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-
-export const articles = pgTable("articles", {
-  id: serial("id").primaryKey(),
-  url: text("url").notNull(),
-  title: text("title").notNull(),
-  author: text("author"),
-  content: text("content").notNull(),
-  summary: text("summary").notNull(),
-  keyPoints: text("key_points").array(),
-  imageUrl: text("image_url"),
-  originalWords: integer("original_words").notNull(),
-  summaryWords: integer("summary_words").notNull(),
-});
-
-export const insertArticleSchema = createInsertSchema(articles).omit({
-  id: true,
-});
-
-export type InsertArticle = z.infer<typeof insertArticleSchema>;
-export type Article = typeof articles.$inferSelect;
 
 // API request/response schemas
 export const summarizeRequestSchema = z.object({
@@ -38,6 +16,7 @@ export const summarizeResponseSchema = z.object({
     originalWords: z.number(),
     summaryWords: z.number(),
     compressionRatio: z.number(),
+    aiPowered: z.boolean().optional(), // New field to indicate if AI was used
   }),
 });
 
