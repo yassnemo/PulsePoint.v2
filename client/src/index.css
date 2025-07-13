@@ -377,36 +377,47 @@ button[class*="hover:bg-muted"]:hover {
   background-color: rgba(0, 238, 255, 0.1) !important;
 }
 
-/* Custom scrollbar for dropdown */
+/* Modern custom scrollbar for dropdown */
 .scrollbar-thin {
   scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.3) transparent;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
   background: transparent;
+  border-radius: 10px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--muted-foreground) / 0.2);
-  border-radius: 3px;
-  transition: background-color 0.2s ease;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(139, 92, 246, 0.6));
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.1);
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--muted-foreground) / 0.4);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.7), rgba(139, 92, 246, 0.9));
+  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.2);
+  transform: scaleX(1.2);
 }
 
-/* Dark mode scrollbar */
+/* Dark mode modern scrollbar */
+.dark .scrollbar-thin {
+  scrollbar-color: rgba(0, 238, 255, 0.3) transparent;
+}
+
 .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(0, 238, 255, 0.3), rgba(0, 238, 255, 0.5));
+  box-shadow: 0 2px 4px rgba(0, 238, 255, 0.1);
 }
 
 .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, rgba(0, 238, 255, 0.6), rgba(0, 238, 255, 0.8));
+  box-shadow: 0 4px 8px rgba(0, 238, 255, 0.2);
 }
 
 /* Override dropdown selected item colors to use proper primary colors */
@@ -435,7 +446,7 @@ button[class*="hover:bg-muted"]:hover {
 .dark .language-dropdown .dropdown-trigger {
   color: hsl(var(--foreground)) !important;
   background-color: hsl(var(--background)) !important;
-  border-color: hsl(var(--border)) !important;
+  border-color: transparent !important;
 }
 
 .dark .language-dropdown .dropdown-trigger:hover {
@@ -449,13 +460,13 @@ button[class*="hover:bg-muted"]:hover {
 /* Force dropdown panel to have proper dark colors */
 .dark .language-dropdown > div {
   background-color: #000000 !important;
-  border-color: hsl(var(--border)) !important;
+  border-color: transparent !important;
   color: #ffffff !important;
 }
 
 .dark .language-dropdown .dropdown-panel {
   background-color: #000000 !important;
-  border-color: hsl(var(--border)) !important;
+  border-color: transparent !important;
 }
 
 /* Force all dropdown buttons to have proper colors */
